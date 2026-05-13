@@ -1,0 +1,2 @@
+class CidadeNaoEncontrada(Exception):
+    pass
