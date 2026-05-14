@@ -1,8 +1,7 @@
 from pydantic import BaseModel
 
 
-class GeocodingResponse(BaseModel):
-    nome: str
-    estado: str
-    latitude: float
-    longitude: float
+class ClimaData(BaseModel):
+    temperatura_max: float
+    temperatura_min: float
+    condicao: str
