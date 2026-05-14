@@ -1,38 +1,49 @@
 import requests
 
-from src.schemas.clima import GeocodingResponse
-from src.core.exceptions import CidadeNaoEncontrada
+from src.schemas.clima import ClimaData
+from src.utils.formatters import traduzir_weather_code
+from requests.exceptions import RequestException
+from src.core.exceptions import ServicoExternoIndisponivel
 
+from src.core.config import (
+    OPEN_METEO_BASE_URL,
+    REQUEST_TIMEOUT
+)
 
-BASE_URL = "https://geocoding-api.open-meteo.com/v1/search"
+def buscar_clima(
+    latitude: float,
+    longitude: float
+) -> ClimaData:
 
+    try:
+        response = requests.get(
+            OPEN_METEO_BASE_URL,
+            params={
+                "latitude": latitude,
+                "longitude": longitude,
+                "daily": (
+                    "temperature_2m_max,"
+                    "temperature_2m_min,"
+                    "weathercode"
+                ),
+                "timezone": "auto"
+            },
+            timeout=REQUEST_TIMEOUT
+        )
 
-def buscar_coordenadas(cidade: str) -> GeocodingResponse:
-    response = requests.get(
-        BASE_URL,
-        params={
-            "name": cidade,
-            "count": 1,
-            "language": "pt",
-            "format": "json"
-        },
-        timeout=10
-    )
+        response.raise_for_status()
 
-    response.raise_for_status()
+    except RequestException:
+        raise ServicoExternoIndisponivel()
 
     data = response.json()
 
-    resultados = data.get("results")
+    daily = data["daily"]
 
-    if not resultados:
-        raise CidadeNaoEncontrada()
+    weather_code = daily["weathercode"][0]
 
-    cidade_data = resultados[0]
-
-    return GeocodingResponse(
-        nome=cidade_data["name"],
-        estado=cidade_data.get("admin1", ""),
-        latitude=cidade_data["latitude"],
-        longitude=cidade_data["longitude"]
+    return ClimaData(
+        temperatura_max=daily["temperature_2m_max"][0],
+        temperatura_min=daily["temperature_2m_min"][0],
+        condicao=traduzir_weather_code(weather_code)
     )

@@ -1,26 +1,33 @@
 import requests
 
 from src.schemas.geoloc import GeocodingResponse
-from src.core.exceptions import CidadeNaoEncontrada
+from src.core.exceptions import CidadeNaoEncontrada, ServicoExternoIndisponivel
+from requests.exceptions import RequestException
 
-
-BASE_URL = "https://geocoding-api.open-meteo.com/v1/search"
+from src.core.config import (
+    GEOCODING_BASE_URL,
+    REQUEST_TIMEOUT
+)
 
 
 def buscar_coordenadas(cidade: str) -> GeocodingResponse:
-    response = requests.get(
-        BASE_URL,
-        params={
-            "name": cidade,
-            "count": 1,
-            "language": "pt",
-            "format": "json"
-        },
-        timeout=10
-    )
+    try:
+        response = requests.get(
+            GEOCODING_BASE_URL,
+            params={
+                "name": cidade,
+                "count": 1,
+                "language": "pt",
+                "format": "json"
+            },
+            timeout=REQUEST_TIMEOUT
+        )
 
-    response.raise_for_status()
+        response.raise_for_status()
 
+    except RequestException:
+        raise ServicoExternoIndisponivel()
+    
     data = response.json()
 
     resultados = data.get("results")
