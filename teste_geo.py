@@ -1,6 +1,6 @@
-from services.open_meteo_clima import buscar_coordenadas
+from src.services.open_meteo_geoloc import buscar_coordenadas
 
 
-resultado = buscar_coordenadas("inventada")
+resultado = buscar_coordenadas("fortaleza")
 
 print(resultado)
