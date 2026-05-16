@@ -3,3 +3,6 @@ class CidadeNaoEncontrada(Exception):
 
 class ServicoExternoIndisponivel(Exception):
     pass
+
+class UFInvalida(Exception):
+    pass
