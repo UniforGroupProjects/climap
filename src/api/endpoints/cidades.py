@@ -1,8 +1,7 @@
-from fastapi import APIRouter, HTTPException, Query
+from fastapi import APIRouter, Query
 
 from src.schemas.cidades import CidadesResponse
 from src.services.brasil_api import buscar_cidades_por_uf
-from src.utils.validators import validar_uf
 
 router = APIRouter()
 
@@ -21,23 +20,8 @@ def listar_cidades(
         description="Quantidade máxima de cidades"
     )
 ):
-    uf = uf.upper()
 
-    if not validar_uf(uf):
-        raise HTTPException(
-            status_code=400,
-            detail="UF inválida ou inexistente"
-        )
-
-    cidades_data = buscar_cidades_por_uf(uf)
-
-    nomes_cidades = [
-        cidade["nome"]
-        for cidade in cidades_data[:limite]
-    ]
-
-    return CidadesResponse(
+    return buscar_cidades_por_uf(
         uf=uf,
-        quantidade=len(nomes_cidades),
-        cidades=nomes_cidades
+        limite=limite
     )
