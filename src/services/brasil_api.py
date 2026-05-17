@@ -1,4 +1,5 @@
 import requests
+from src.utils.validators import UFS_VALIDAS
 
 from src.core.config import (
     BRASIL_API_URL,
@@ -10,12 +11,35 @@ from src.core.exceptions import (
     ServicoExternoIndisponivel
 )
 
-from src.schemas.cidades import CidadesResponse
+from src.schemas.cidades import CidadesResponse, CidadeResponse
 
 from src.utils.validators import validar_uf
 
-from requests.exceptions import RequestException
+from requests.exceptions import HTTPError, Timeout
 
+
+def _buscar_cidades_raw(uf: str):
+
+    try:
+
+        response = requests.get(
+            f"{BRASIL_API_URL}/{uf}",
+            timeout=REQUEST_TIMEOUT
+        )
+
+        response.raise_for_status()
+
+    except (Timeout, ConnectionError):
+        raise ServicoExternoIndisponivel()
+
+    except HTTPError as error:
+
+        if error.response.status_code == 404:
+            raise UFInvalida()
+
+        raise ServicoExternoIndisponivel()
+
+    return response.json()
 
 def buscar_cidades_por_uf(
     uf: str,
@@ -27,19 +51,7 @@ def buscar_cidades_por_uf(
     if not validar_uf(uf):
         raise UFInvalida()
 
-    try:
-
-        response = requests.get(
-            f"{BRASIL_API_URL}/{uf}",
-            timeout=REQUEST_TIMEOUT
-        )
-
-        response.raise_for_status()
-
-    except RequestException:
-        raise ServicoExternoIndisponivel()
-
-    cidades_data = response.json()
+    cidades_data = _buscar_cidades_raw(uf)
 
     nomes_cidades = [
         cidade["nome"]
@@ -51,3 +63,28 @@ def buscar_cidades_por_uf(
         quantidade=len(nomes_cidades),
         cidades=nomes_cidades
     )
+
+def buscar_cidades_por_nome(nome: str):
+
+    nome = nome.lower().strip()
+
+    resultados = []
+
+    for uf in UFS_VALIDAS:
+
+        cidades_data = _buscar_cidades_raw(uf)
+
+        for cidade in cidades_data:
+
+            cidade_nome = cidade["nome"]
+
+            if cidade_nome.lower().startswith(nome):
+
+                resultados.append(
+                    CidadeResponse(
+                        nome=cidade_nome,
+                        uf=uf
+                    )
+                )
+
+    return resultados

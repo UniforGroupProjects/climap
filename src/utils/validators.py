@@ -5,7 +5,6 @@ UFS_VALIDAS = {
     "RO", "RR", "SC", "SP", "SE", "TO"
 }
 
-
 def validar_uf(uf: str) -> bool:
     uf = uf.upper()
 
