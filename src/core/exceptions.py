@@ -1,8 +1,32 @@
-class CidadeNaoEncontrada(Exception):
-    pass
+class AppException(Exception):
 
-class ServicoExternoIndisponivel(Exception):
-    pass
+    def __init__(
+        self,
+        message: str
+    ):
+        self.message = message
 
-class UFInvalida(Exception):
-    pass
+        super().__init__(message)
+
+class CidadeNaoEncontrada(AppException):
+
+    def __init__(self):
+        super().__init__(
+            "Cidade não encontrada"
+        )
+
+
+class ServicoExternoIndisponivel(AppException):
+
+    def __init__(self):
+        super().__init__(
+            "Serviço externo indisponível"
+        )
+
+
+class UFInvalida(AppException):
+
+    def __init__(self):
+        super().__init__(
+            "UF inválida ou inexistente"
+        )

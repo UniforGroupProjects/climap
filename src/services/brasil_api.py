@@ -11,11 +11,11 @@ from src.core.exceptions import (
     ServicoExternoIndisponivel
 )
 
-from src.schemas.cidades import CidadesResponse
+from src.schemas.cidades import CidadesResponse, CidadeResponse
 
 from src.utils.validators import validar_uf
 
-from requests.exceptions import RequestException
+from requests.exceptions import HTTPError, Timeout
 
 
 def _buscar_cidades_raw(uf: str):
@@ -29,10 +29,17 @@ def _buscar_cidades_raw(uf: str):
 
         response.raise_for_status()
 
-        return response.json()
-
-    except RequestException:
+    except (Timeout, ConnectionError):
         raise ServicoExternoIndisponivel()
+
+    except HTTPError as error:
+
+        if error.response.status_code == 404:
+            raise UFInvalida()
+
+        raise ServicoExternoIndisponivel()
+
+    return response.json()
 
 def buscar_cidades_por_uf(
     uf: str,
@@ -73,9 +80,11 @@ def buscar_cidades_por_nome(nome: str):
 
             if cidade_nome.lower().startswith(nome):
 
-                resultados.append({
-                    "nome": cidade_nome,
-                    "uf": uf
-                })
+                resultados.append(
+                    CidadeResponse(
+                        nome=cidade_nome,
+                        uf=uf
+                    )
+                )
 
     return resultados
