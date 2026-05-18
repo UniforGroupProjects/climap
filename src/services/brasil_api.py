@@ -41,6 +41,7 @@ def _buscar_cidades_raw(uf: str):
 
     return response.json()
 
+
 def buscar_cidades_por_uf(
     uf: str,
     limite: int
@@ -58,11 +59,13 @@ def buscar_cidades_por_uf(
         for cidade in cidades_data[:limite]
     ]
 
+    # --- MUDANÇA FEITA AQUI ---
     return CidadesResponse(
         uf=uf,
-        quantidade=len(nomes_cidades),
-        cidades=nomes_cidades
+        quantidade_retornada=len(nomes_cidades),
+        cidades=[{"nome": nome} for nome in nomes_cidades]
     )
+
 
 def buscar_cidades_por_nome(nome: str):
 

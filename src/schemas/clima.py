@@ -1,22 +1,17 @@
-from datetime import datetime
+from pydantic import BaseModel, Field
 from src.utils.datetime_utils import utc_now
 
-from pydantic import BaseModel
-from typing import List
+class UnidadesClima(BaseModel):
+    temperatura: str = "°C"
 
-class ClimaData(BaseModel):
-    temperatura_max: float
+class ClimaDetalhe(BaseModel):
     temperatura_min: float
+    temperatura_max: float
     condicao: str
+    unidades: UnidadesClima = UnidadesClima()
 
 class ClimaResponse(BaseModel):
-    cidade: str
+    nome: str
     estado: str
-    temperatura_max: float
-    temperatura_min: float
-    condicao: str
-
-class ClimaListaResponse(BaseModel):
-    quantidade: int
-    resultados: List[ClimaResponse]
-    data_consulta: datetime = utc_now()
+    clima: ClimaDetalhe
+    consultado_em: str = Field(default_factory=utc_now)
