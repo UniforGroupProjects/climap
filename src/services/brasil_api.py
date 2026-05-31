@@ -59,7 +59,6 @@ def buscar_cidades_por_uf(
         for cidade in cidades_data[:limite]
     ]
 
-    # --- MUDANÇA FEITA AQUI ---
     return CidadesResponse(
         uf=uf,
         quantidade_retornada=len(nomes_cidades),
