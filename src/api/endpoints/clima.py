@@ -14,13 +14,13 @@ router = APIRouter()
 )
 def consultar_clima(cidade: str):
     
-    # Busca todas as localizações (já levanta erro se não achar)
+   
     localizacoes = buscar_coordenadas(cidade)
     
-    # Pegamos apenas a primeira cidade da lista
+    
     loc = localizacoes[0]
     
-    # Busca o clima usando as coordenadas
+    
     clima = buscar_clima(
         latitude=loc.latitude,
         longitude=loc.longitude

@@ -6,7 +6,7 @@ from src.utils.datetime_utils import utc_now
 class CidadeItem(BaseModel):
     nome: str
 
-class CidadeResponse(BaseModel):  # <-- Adicionamos essa classe de volta!
+class CidadeResponse(BaseModel):  
     nome: str
     uf: str
 
