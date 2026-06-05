@@ -1,0 +1,318 @@
+{
+  "info": {
+    "_postman_id": "e335a5f6-45cf-4ea1-b2ec-31db088467c0",
+    "name": "Climap",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+    "_exporter_id": "54932209"
+  },
+  "item": [
+    {
+      "name": "Cidades",
+      "item": [
+        {
+          "name": "Buscar cidades",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test(\"Status code deve ser 200\", function () {\r",
+                  "    pm.response.to.have.status(200);\r",
+                  "});\r",
+                  "\r",
+                  "pm.test(\"Resposta possui lista de cidades\", function () {\r",
+                  "    const json = pm.response.json();\r",
+                  "\r",
+                  "    pm.expect(json).to.have.property(\"cidades\");\r",
+                  "    pm.expect(json.cidades).to.be.an(\"array\");\r",
+                  "});\r",
+                  "\r",
+                  "pm.test(\"Quantidade corresponde ao número de cidades\", function () {\r",
+                  "    const json = pm.response.json();\r",
+                  "\r",
+                  "    pm.expect(json.quantidade_retornada)\r",
+                  "      .to.eql(json.cidades.length);\r",
+                  "});\r",
+                  "\r",
+                  "pm.test(\"Resposta possui data da consulta\", function () {\r",
+                  "    const json = pm.response.json();\r",
+                  "\r",
+                  "    pm.expect(json).to.have.property(\"consultado_em\");\r",
+                  "});\r",
+                  "\r",
+                  "pm.test(\"Existe ao menos uma cidade retornada\", function () {\r",
+                  "    const json = pm.response.json();\r",
+                  "\r",
+                  "    pm.expect(json.cidades.length).to.be.above(0);\r",
+                  "});"
+                ],
+                "type": "text/javascript",
+                "packages": {},
+                "requests": {}
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "http://localhost:3000/api/v1/cidades/CE",
+              "protocol": "http",
+              "host": [
+                "localhost"
+              ],
+              "port": "3000",
+              "path": [
+                "api",
+                "v1",
+                "cidades",
+                "CE"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Buscar cidades - UF invalida",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test(\"Status code é 400\", function () {\r",
+                  "    pm.response.to.have.status(400);\r",
+                  "});\r",
+                  "\r",
+                  "pm.test(\"Retorna mensagem de erro\", function () {\r",
+                  "    const json = pm.response.json();\r",
+                  "\r",
+                  "    pm.expect(json).to.have.property(\"mensagem\");\r",
+                  "});"
+                ],
+                "type": "text/javascript",
+                "packages": {},
+                "requests": {}
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "http://localhost:3000/api/v1/cidades/XX",
+              "protocol": "http",
+              "host": [
+                "localhost"
+              ],
+              "port": "3000",
+              "path": [
+                "api",
+                "v1",
+                "cidades",
+                "XX"
+              ]
+            }
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "Clima",
+      "item": [
+        {
+          "name": "Buscar Clima",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test(\"Status code é 200\", function () {\r",
+                  "    pm.response.to.have.status(200);\r",
+                  "});\r",
+                  "\r",
+                  "pm.test(\"Resposta possui nome\", function () {\r",
+                  "    const json = pm.response.json();\r",
+                  "\r",
+                  "    pm.expect(json).to.have.property(\"nome\");\r",
+                  "});\r",
+                  "\r",
+                  "pm.test(\"Resposta possui estado\", function () {\r",
+                  "    const json = pm.response.json();\r",
+                  "\r",
+                  "    pm.expect(json).to.have.property(\"estado\");\r",
+                  "});\r",
+                  "\r",
+                  "pm.test(\"Resposta possui clima\", function () {\r",
+                  "    const json = pm.response.json();\r",
+                  "\r",
+                  "    pm.expect(json).to.have.property(\"clima\");\r",
+                  "});\r",
+                  "\r",
+                  "pm.test(\"Resposta possui data da consulta\", function () {\r",
+                  "    const json = pm.response.json();\r",
+                  "\r",
+                  "    pm.expect(json).to.have.property(\"consultado_em\");\r",
+                  "});\r",
+                  "\r",
+                  "pm.test(\"Clima possui os campos esperados\", function () {\r",
+                  "    const json = pm.response.json();\r",
+                  "\r",
+                  "    pm.expect(json.clima).to.have.property(\"temperatura_min\");\r",
+                  "    pm.expect(json.clima).to.have.property(\"temperatura_max\");\r",
+                  "    pm.expect(json.clima).to.have.property(\"condicao\");\r",
+                  "});\r",
+                  "\r",
+                  "pm.test(\"Temperaturas são números\", function () {\r",
+                  "    const json = pm.response.json();\r",
+                  "\r",
+                  "    pm.expect(json.clima.temperatura_min).to.be.a(\"number\");\r",
+                  "    pm.expect(json.clima.temperatura_max).to.be.a(\"number\");\r",
+                  "});"
+                ],
+                "type": "text/javascript",
+                "packages": {},
+                "requests": {}
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "http://localhost:3000/api/v1/clima/Fortaleza",
+              "protocol": "http",
+              "host": [
+                "localhost"
+              ],
+              "port": "3000",
+              "path": [
+                "api",
+                "v1",
+                "clima",
+                "Fortaleza"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Buscar Clima - nome invalido",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test(\"Status 400\", function () {\r",
+                  "    pm.response.to.have.status(400);\r",
+                  "});\r",
+                  "\r",
+                  "const jsonData = pm.response.json();\r",
+                  "\r",
+                  "pm.test(\"Erro é true\", function () {\r",
+                  "    pm.expect(jsonData.erro).to.eql(true);\r",
+                  "});\r",
+                  "\r",
+                  "pm.test(\"Código correto\", function () {\r",
+                  "    pm.expect(jsonData.codigo)\r",
+                  "        .to.eql(\"NOME_INVALIDO\");\r",
+                  "});\r",
+                  "\r",
+                  "pm.test(\"Mensagem correta\", function () {\r",
+                  "    pm.expect(jsonData.mensagem)\r",
+                  "        .to.eql(\r",
+                  "            \"O nome da cidade deve conter pelo menos 2 caracteres\"\r",
+                  "        );\r",
+                  "});\r",
+                  "\r",
+                  "pm.test(\"Nome informado retornado\", function () {\r",
+                  "    pm.expect(jsonData.nome_informado)\r",
+                  "        .to.eql(\"X\");\r",
+                  "});"
+                ],
+                "type": "text/javascript",
+                "packages": {},
+                "requests": {}
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "http://localhost:3000/api/v1/clima/X",
+              "protocol": "http",
+              "host": [
+                "localhost"
+              ],
+              "port": "3000",
+              "path": [
+                "api",
+                "v1",
+                "clima",
+                "X"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Buscar Clima - cidade inexistente",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test(\"Status code é 404\", function () {\r",
+                  "    pm.response.to.have.status(404);\r",
+                  "});\r",
+                  "\r",
+                  "pm.test(\"Resposta indica erro\", function () {\r",
+                  "    const json = pm.response.json();\r",
+                  "\r",
+                  "    pm.expect(json.erro).to.eql(true);\r",
+                  "});\r",
+                  "\r",
+                  "pm.test(\"Código correto\", function () {\r",
+                  "    const json = pm.response.json();\r",
+                  "\r",
+                  "    pm.expect(json.codigo)\r",
+                  "      .to.eql(\"CIDADE_NAO_ENCONTRADA\");\r",
+                  "});\r",
+                  "\r",
+                  "pm.test(\"Mensagem presente\", function () {\r",
+                  "    const json = pm.response.json();\r",
+                  "\r",
+                  "    pm.expect(json).to.have.property(\"mensagem\");\r",
+                  "});"
+                ],
+                "type": "text/javascript",
+                "packages": {},
+                "requests": {}
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "http://localhost:3000/api/v1/clima/XYZABC123TESTE",
+              "protocol": "http",
+              "host": [
+                "localhost"
+              ],
+              "port": "3000",
+              "path": [
+                "api",
+                "v1",
+                "clima",
+                "XYZABC123TESTE"
+              ]
+            }
+          },
+          "response": []
+        }
+      ]
+    }
+  ]
+}
