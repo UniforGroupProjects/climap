@@ -30,3 +30,8 @@ class UFInvalida(AppException):
         super().__init__(
             "UF inválida ou inexistente"
         )
+
+class NomeInvalido(Exception):
+
+    def __init__(self, nome: str):
+        self.nome = nome

@@ -1,7 +1,7 @@
 import requests
 
 from src.schemas.geoloc import GeocodingResponse
-from src.core.exceptions import CidadeNaoEncontrada, ServicoExternoIndisponivel
+from src.core.exceptions import CidadeNaoEncontrada, NomeInvalido, ServicoExternoIndisponivel
 from requests.exceptions import RequestException
 from src.services.brasil_api import buscar_cidades_por_nome
 
@@ -14,6 +14,12 @@ from src.core.config import (
 def buscar_coordenadas(
     cidade: str
 ) -> list[GeocodingResponse]:
+
+
+    cidade = cidade.strip()
+
+    if len(cidade) < 2:
+        raise NomeInvalido(cidade)
 
     cidades_brasileiras = buscar_cidades_por_nome(cidade)
 

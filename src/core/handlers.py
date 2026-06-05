@@ -1,6 +1,6 @@
 from fastapi import Request
 from fastapi.responses import JSONResponse
-from src.core.exceptions import CidadeNaoEncontrada, UFInvalida, ServicoExternoIndisponivel
+from src.core.exceptions import CidadeNaoEncontrada, NomeInvalido, UFInvalida, ServicoExternoIndisponivel
 
 # Erro 404 - Cidade não encontrada
 async def cidade_nao_encontrada_handler(request: Request, exc: CidadeNaoEncontrada):
@@ -37,5 +37,22 @@ async def servico_indisponivel_handler(request: Request, exc: ServicoExternoIndi
             "codigo": "SERVICO_EXTERNO_INDISPONIVEL",
             "mensagem": "Não foi possível obter dados do serviço externo. Tente novamente em alguns instantes",
             "servico": "CPTEC"
+        }
+    )
+
+async def nome_invalido_handler(
+    request,
+    exc: NomeInvalido
+):
+    return JSONResponse(
+        status_code=400,
+        content={
+            "erro": True,
+            "codigo": "NOME_INVALIDO",
+            "mensagem": (
+                "O nome da cidade deve conter "
+                "pelo menos 2 caracteres"
+            ),
+            "nome_informado": exc.nome
         }
     )
